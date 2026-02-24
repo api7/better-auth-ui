@@ -58,3 +58,19 @@ You can thoroughly customize `<AuthView />` components using TailwindCSS utility
     }}
 />
 ```
+
+### Add Components Above Sign Up Button
+
+Use the `slots` prop to render extra UI directly above the primary action button in the sign-up form:
+
+```tsx
+<AuthView
+    slots={{
+        beforeSignUpButton: (
+            <p className="text-center text-muted-foreground text-sm">
+                By creating an account, you agree to our Terms.
+            </p>
+        ),
+    }}
+/>
+```

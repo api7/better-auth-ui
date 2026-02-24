@@ -1,6 +1,6 @@
 "use client"
 
-import { useContext, useEffect } from "react"
+import { type ReactNode, useContext, useEffect } from "react"
 
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { getViewByPath } from "../../lib/utils"
@@ -36,6 +36,9 @@ export type AuthFormClassNames = {
     qrCode?: string
     secondaryButton?: string
 }
+export type AuthFormSlots = {
+    beforeSignUpButton?: ReactNode
+}
 
 export interface AuthFormProps {
     className?: string
@@ -43,6 +46,7 @@ export interface AuthFormProps {
     callbackURL?: string
     isSubmitting?: boolean
     localization?: Partial<AuthLocalization>
+    slots?: AuthFormSlots
     pathname?: string
     redirectTo?: string
     view?: AuthViewPath
@@ -73,6 +77,7 @@ export function AuthForm({
     callbackURL,
     isSubmitting,
     localization,
+    slots,
     pathname,
     redirectTo,
     view,
@@ -299,6 +304,7 @@ export function AuthForm({
                     className={className}
                     classNames={classNames}
                     callbackURL={callbackURL}
+                    beforeSignUpButton={slots?.beforeSignUpButton}
                     localization={localization}
                     redirectTo={redirectTo}
                     isSubmitting={isSubmitting}
