@@ -5,6 +5,7 @@
     "description": "Plug & play shadcn/ui components for better-auth",
     "scripts": {
         "build": "tsup --clean --dts && cp src/style.css dist/style.css",
+        "prepare": "pnpm build",
         "dev": "tsc-watch",
         "prepublishOnly": "rm -rf dist && turbo build",
         "lint": "biome check",
