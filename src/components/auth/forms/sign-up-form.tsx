@@ -3,7 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { BetterFetchOption } from "better-auth/react"
 import { Loader2, Trash2Icon, UploadCloudIcon } from "lucide-react"
-import { useCallback, useContext, useEffect, useRef, useState } from "react"
+import {
+    type ReactNode,
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState
+} from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -44,6 +51,7 @@ import { UserAvatar } from "../../user-avatar"
 import type { AuthFormClassNames } from "../auth-form"
 
 export interface SignUpFormProps {
+    beforeSignUpButton?: ReactNode
     className?: string
     classNames?: AuthFormClassNames
     callbackURL?: string
@@ -68,6 +76,7 @@ export interface SignUpFormProps {
  * @returns A JSX element that renders the fully wired sign-up form UI
  */
 export function SignUpForm({
+    beforeSignUpButton,
     className,
     classNames,
     callbackURL,
@@ -818,6 +827,8 @@ export function SignUpForm({
                     localization={localization}
                     action="/sign-up/email"
                 />
+
+                {beforeSignUpButton}
 
                 <Button
                     type="submit"

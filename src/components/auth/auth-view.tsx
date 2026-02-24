@@ -20,7 +20,11 @@ import {
 } from "../ui/card"
 import { Separator } from "../ui/separator"
 import { AuthCallback } from "./auth-callback"
-import { AuthForm, type AuthFormClassNames } from "./auth-form"
+import {
+    AuthForm,
+    type AuthFormClassNames,
+    type AuthFormSlots
+} from "./auth-form"
 import { EmailOTPButton } from "./email-otp-button"
 import { MagicLinkButton } from "./magic-link-button"
 import { OneTap } from "./one-tap"
@@ -40,6 +44,7 @@ export type AuthViewClassNames = {
     separator?: string
     title?: string
 }
+export type AuthViewSlots = AuthFormSlots
 
 export interface AuthViewProps {
     className?: string
@@ -48,6 +53,7 @@ export interface AuthViewProps {
     cardHeader?: ReactNode
     cardFooter?: ReactNode
     localization?: AuthLocalization
+    slots?: AuthViewSlots
     path?: string
     pathname?: string
     redirectTo?: string
@@ -63,6 +69,7 @@ export function AuthView({
     cardHeader,
     cardFooter,
     localization,
+    slots,
     path: pathProp,
     pathname,
     redirectTo,
@@ -175,6 +182,7 @@ export function AuthView({
                             isSubmitting={isSubmitting}
                             localization={localization}
                             otpSeparators={otpSeparators}
+                            slots={slots}
                             view={view}
                             redirectTo={redirectTo}
                             setIsSubmitting={setIsSubmitting}
