@@ -15,8 +15,8 @@ import {
 } from "../settings/shared/settings-card"
 import { CardContent } from "../ui/card"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
-import { Input } from "../ui/input"
 import { Skeleton } from "../ui/skeleton"
+import { PrefixedSlugInput } from "./prefixed-slug-input"
 
 export interface OrganizationSlugCardProps extends SettingsCardProps {
     slug?: string
@@ -97,6 +97,10 @@ function OrganizationSlugForm({
         () => ({ ...contextLocalization, ...localizationProp }),
         [contextLocalization, localizationProp]
     )
+    const slugPrefix =
+        typeof organizationOptions?.slugField?.prefix === "string"
+            ? organizationOptions.slugField.prefix
+            : undefined
 
     const { refetch: refetchOrganization } = useCurrentOrganization({
         slug: organization.slug
@@ -200,16 +204,18 @@ function OrganizationSlugForm({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
-                                            <Input
-                                                className={classNames?.input}
+                                            <PrefixedSlugInput
+                                                slugPrefix={slugPrefix}
+                                                field={{
+                                                    ...field,
+                                                    disabled:
+                                                        isSubmitting ||
+                                                        !hasPermission?.success
+                                                }}
                                                 placeholder={
                                                     localization.ORGANIZATION_SLUG_PLACEHOLDER
                                                 }
-                                                disabled={
-                                                    isSubmitting ||
-                                                    !hasPermission?.success
-                                                }
-                                                {...field}
+                                                className={classNames?.input}
                                             />
                                         </FormControl>
 

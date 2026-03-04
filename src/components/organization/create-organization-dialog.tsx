@@ -42,6 +42,7 @@ import {
 } from "../ui/form"
 import { Input } from "../ui/input"
 import { OrganizationLogo } from "./organization-logo"
+import { PrefixedSlugInput } from "./prefixed-slug-input"
 
 export interface CreateOrganizationDialogProps
     extends ComponentProps<typeof Dialog> {
@@ -70,6 +71,11 @@ export function CreateOrganizationDialog({
         () => ({ ...contextLocalization, ...localizationProp }),
         [contextLocalization, localizationProp]
     )
+    const slugPrefix =
+        typeof organizationOptions?.slugField?.prefix === "string"
+            ? organizationOptions.slugField.prefix
+            : undefined
+    const slugLabelInfo = organizationOptions?.slugField?.labelInfo
 
     const [logo, setLogo] = useState<string | null>(null)
     const [logoPending, setLogoPending] = useState(false)
@@ -350,16 +356,20 @@ export function CreateOrganizationDialog({
                             name="slug"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>
-                                        {localization.ORGANIZATION_SLUG}
-                                    </FormLabel>
+                                    <div className="flex items-center gap-2">
+                                        <FormLabel>
+                                            {localization.ORGANIZATION_SLUG}
+                                        </FormLabel>
+                                        {slugLabelInfo}
+                                    </div>
 
                                     <FormControl>
-                                        <Input
+                                        <PrefixedSlugInput
+                                            slugPrefix={slugPrefix}
+                                            field={field}
                                             placeholder={
                                                 localization.ORGANIZATION_SLUG_PLACEHOLDER
                                             }
-                                            {...field}
                                         />
                                     </FormControl>
 
