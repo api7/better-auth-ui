@@ -70,6 +70,8 @@ export function CreateOrganizationDialog({
         () => ({ ...contextLocalization, ...localizationProp }),
         [contextLocalization, localizationProp]
     )
+    const slugPrefix = organizationOptions?.slugField?.prefix
+    const slugLabelInfo = organizationOptions?.slugField?.labelInfo
 
     const [logo, setLogo] = useState<string | null>(null)
     const [logoPending, setLogoPending] = useState(false)
@@ -350,17 +352,40 @@ export function CreateOrganizationDialog({
                             name="slug"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>
-                                        {localization.ORGANIZATION_SLUG}
-                                    </FormLabel>
+                                    <div className="flex items-center gap-2">
+                                        <FormLabel>
+                                            {localization.ORGANIZATION_SLUG}
+                                        </FormLabel>
+                                        {slugLabelInfo}
+                                    </div>
 
                                     <FormControl>
-                                        <Input
-                                            placeholder={
-                                                localization.ORGANIZATION_SLUG_PLACEHOLDER
-                                            }
-                                            {...field}
-                                        />
+                                        {slugPrefix ? (
+                                            <div
+                                                className={cn(
+                                                    "flex h-9 w-full min-w-0 items-center overflow-hidden rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:bg-input/30"
+                                                )}
+                                            >
+                                                <div className="shrink-0 px-3 text-muted-foreground text-sm">
+                                                    {slugPrefix}
+                                                </div>
+                                                <div className="h-full w-px bg-border" />
+                                                <Input
+                                                    className="h-full rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                                                    placeholder={
+                                                        localization.ORGANIZATION_SLUG_PLACEHOLDER
+                                                    }
+                                                    {...field}
+                                                />
+                                            </div>
+                                        ) : (
+                                            <Input
+                                                placeholder={
+                                                    localization.ORGANIZATION_SLUG_PLACEHOLDER
+                                                }
+                                                {...field}
+                                            />
+                                        )}
                                     </FormControl>
 
                                     <FormMessage />
