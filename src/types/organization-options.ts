@@ -24,6 +24,17 @@ export type OrganizationLogoOptions = {
 import type { ReactNode } from "react"
 import type { OrganizationViewPaths } from "../lib/view-paths"
 
+export type SlugFieldOptions = {
+    /**
+     * Content rendered before the slug input (e.g. "api7.ai/").
+     */
+    prefix?: ReactNode
+    /**
+     * Extra content rendered next to the slug label (e.g. tooltip/info icon).
+     */
+    labelInfo?: ReactNode
+}
+
 export type OrganizationOptions = {
     /**
      * Logo configuration
@@ -68,16 +79,7 @@ export type OrganizationOptions = {
     /**
      * Customize shared slug field slots across organization slug inputs.
      */
-    slugField?: {
-        /**
-         * Content rendered before the slug input (e.g. "api7.ai/").
-         */
-        prefix?: ReactNode
-        /**
-         * Extra content rendered next to the slug label (e.g. tooltip/info icon).
-         */
-        labelInfo?: ReactNode
-    }
+    slugField?: SlugFieldOptions
 }
 
 export type OrganizationOptionsContext = {
@@ -120,14 +122,5 @@ export type OrganizationOptionsContext = {
     /**
      * Customize shared slug field slots across organization slug inputs.
      */
-    slugField?: {
-        /**
-         * Content rendered before the slug input (e.g. "api7.ai/").
-         */
-        prefix?: ReactNode
-        /**
-         * Extra content rendered next to the slug label (e.g. tooltip/info icon).
-         */
-        labelInfo?: ReactNode
-    }
+    slugField?: SlugFieldOptions
 }

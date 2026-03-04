@@ -14,15 +14,9 @@ import {
     type SettingsCardProps
 } from "../settings/shared/settings-card"
 import { CardContent } from "../ui/card"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage
-} from "../ui/form"
-import { Input } from "../ui/input"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import { Skeleton } from "../ui/skeleton"
+import { PrefixedSlugInput } from "./prefixed-slug-input"
 
 export interface OrganizationSlugCardProps extends SettingsCardProps {
     slug?: string
@@ -103,7 +97,10 @@ function OrganizationSlugForm({
         () => ({ ...contextLocalization, ...localizationProp }),
         [contextLocalization, localizationProp]
     )
-    const slugPrefix = organizationOptions?.slugField?.prefix
+    const slugPrefix =
+        typeof organizationOptions?.slugField?.prefix === "string"
+            ? organizationOptions.slugField.prefix
+            : undefined
 
     const { refetch: refetchOrganization } = useCurrentOrganization({
         slug: organization.slug
@@ -207,46 +204,19 @@ function OrganizationSlugForm({
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormControl>
-                                            {slugPrefix ? (
-                                                <div
-                                                    className={cn(
-                                                        "flex h-9 w-full min-w-0 items-center overflow-hidden rounded-md border border-input bg-transparent shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:bg-input/30"
-                                                    )}
-                                                >
-                                                    <div className="shrink-0 px-3 text-muted-foreground text-sm">
-                                                        {slugPrefix}
-                                                    </div>
-                                                    <div className="h-full w-px bg-border" />
-                                                    <Input
-                                                        className={cn(
-                                                            "h-full rounded-none border-0 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0",
-                                                            classNames?.input
-                                                        )}
-                                                        placeholder={
-                                                            localization.ORGANIZATION_SLUG_PLACEHOLDER
-                                                        }
-                                                        disabled={
-                                                            isSubmitting ||
-                                                            !hasPermission?.success
-                                                        }
-                                                        {...field}
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <Input
-                                                    className={
-                                                        classNames?.input
-                                                    }
-                                                    placeholder={
-                                                        localization.ORGANIZATION_SLUG_PLACEHOLDER
-                                                    }
-                                                    disabled={
+                                            <PrefixedSlugInput
+                                                slugPrefix={slugPrefix}
+                                                field={{
+                                                    ...field,
+                                                    disabled:
                                                         isSubmitting ||
                                                         !hasPermission?.success
-                                                    }
-                                                    {...field}
-                                                />
-                                            )}
+                                                }}
+                                                placeholder={
+                                                    localization.ORGANIZATION_SLUG_PLACEHOLDER
+                                                }
+                                                className={classNames?.input}
+                                            />
                                         </FormControl>
 
                                         <FormMessage
