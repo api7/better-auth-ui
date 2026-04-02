@@ -5,7 +5,7 @@ import { type ReactNode, useContext, useEffect, useState } from "react"
 import { useIsHydrated } from "../../hooks/use-hydrated"
 import { AuthUIContext } from "../../lib/auth-ui-provider"
 import { socialProviders } from "../../lib/social-providers"
-import { cn, getViewByPath } from "../../lib/utils"
+import { cn, getSearchParam, getViewByPath } from "../../lib/utils"
 import type { AuthViewPaths } from "../../lib/view-paths"
 import type { AuthLocalization } from "../../localization/auth-localization"
 import { AcceptInvitationCard } from "../organization/accept-invitation-card"
@@ -107,6 +107,12 @@ export function AuthView({
     const path = pathProp ?? pathname?.split("/").pop()
 
     const view = viewProp || getViewByPath(viewPaths!, path) || "SIGN_IN"
+
+    const [totpURI, setTotpURI] = useState<string | null>(null)
+
+    useEffect(() => {
+        setTotpURI(getSearchParam("totpURI"))
+    }, [])
 
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -231,6 +237,7 @@ export function AuthView({
 
                 {view !== "RESET_PASSWORD" &&
                     view !== "EMAIL_VERIFICATION" &&
+                    !(view === "TWO_FACTOR" && totpURI) &&
                     (social?.providers?.length ||
                         genericOAuth?.providers?.length ||
                         (view === "SIGN_IN" && passkey)) && (

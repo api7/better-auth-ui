@@ -212,7 +212,7 @@ export function TwoFactorForm({
 
                             <QRCode
                                 className={cn(
-                                    "border shadow-xs",
+                                    "mx-auto border shadow-xs",
                                     classNames?.qrCode
                                 )}
                                 value={totpURI}
@@ -234,15 +234,17 @@ export function TwoFactorForm({
                                             {localization.ONE_TIME_PASSWORD}
                                         </FormLabel>
 
-                                        <Link
-                                            className={cn(
-                                                "text-sm hover:underline",
-                                                classNames?.forgotPasswordLink
-                                            )}
-                                            href={`${basePath}/${viewPaths.RECOVER_ACCOUNT}${isHydrated ? window.location.search : ""}`}
-                                        >
-                                            {localization.FORGOT_AUTHENTICATOR}
-                                        </Link>
+                                        {!totpURI && (
+                                            <Link
+                                                className={cn(
+                                                    "text-sm hover:underline",
+                                                    classNames?.forgotPasswordLink
+                                                )}
+                                                href={`${basePath}/${viewPaths.RECOVER_ACCOUNT}${isHydrated ? window.location.search : ""}`}
+                                            >
+                                                {localization.FORGOT_AUTHENTICATOR}
+                                            </Link>
+                                        )}
                                     </div>
 
                                     <FormControl>
@@ -277,26 +279,28 @@ export function TwoFactorForm({
                             )}
                         />
 
-                        <FormField
-                            control={form.control}
-                            name="trustDevice"
-                            render={({ field }) => (
-                                <FormItem className="flex">
-                                    <FormControl>
-                                        <Checkbox
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                            disabled={isSubmitting}
-                                            className={classNames?.checkbox}
-                                        />
-                                    </FormControl>
+                        {!totpURI && (
+                            <FormField
+                                control={form.control}
+                                name="trustDevice"
+                                render={({ field }) => (
+                                    <FormItem className="flex">
+                                        <FormControl>
+                                            <Checkbox
+                                                checked={field.value}
+                                                onCheckedChange={field.onChange}
+                                                disabled={isSubmitting}
+                                                className={classNames?.checkbox}
+                                            />
+                                        </FormControl>
 
-                                    <FormLabel className={classNames?.label}>
-                                        {localization.TRUST_DEVICE}
-                                    </FormLabel>
-                                </FormItem>
-                            )}
-                        />
+                                        <FormLabel className={classNames?.label}>
+                                            {localization.TRUST_DEVICE}
+                                        </FormLabel>
+                                    </FormItem>
+                                )}
+                            />
+                        )}
                     </>
                 )}
 
