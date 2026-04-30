@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 import {
     type ComponentProps,
+    type ComponentType,
     type ReactNode,
     useCallback,
     useContext,
@@ -79,6 +80,16 @@ export interface OrganizationSwitcherProps
      */
     hidePersonal?: boolean
     hideCreate?: boolean
+    /**
+     * Custom create-organization dialog component.
+     * When provided, clicking "Create Organization" in the dropdown will open this
+     * dialog instead of the built-in CreateOrganizationDialog.
+     * Receives `open` and `onOpenChange` props for controlling visibility.
+     */
+    createOrganizationDialog?: ComponentType<{
+        open: boolean
+        onOpenChange: (open: boolean) => void
+    }>
 }
 
 /**
@@ -105,6 +116,7 @@ export function OrganizationSwitcher({
     onSetActive,
     hidePersonal,
     hideCreate,
+    createOrganizationDialog,
     ...props
 }: OrganizationSwitcherProps) {
     const {
@@ -512,11 +524,23 @@ export function OrganizationSwitcher({
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <CreateOrganizationDialog
-                open={isCreateOrgDialogOpen}
-                onOpenChange={setIsCreateOrgDialogOpen}
-                localization={localization}
-            />
+            {(() => {
+                const CreateOrganizationDialogOverride =
+                    createOrganizationDialog
+
+                return CreateOrganizationDialogOverride ? (
+                    <CreateOrganizationDialogOverride
+                        open={isCreateOrgDialogOpen}
+                        onOpenChange={setIsCreateOrgDialogOpen}
+                    />
+                ) : (
+                    <CreateOrganizationDialog
+                        open={isCreateOrgDialogOpen}
+                        onOpenChange={setIsCreateOrgDialogOpen}
+                        localization={localization}
+                    />
+                )
+            })()}
         </>
     )
 }
