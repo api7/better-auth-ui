@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 import {
     type ComponentProps,
+    type ComponentType,
     type ReactNode,
     useCallback,
     useContext,
@@ -85,10 +86,10 @@ export interface OrganizationSwitcherProps
      * dialog instead of the built-in CreateOrganizationDialog.
      * Receives `open` and `onOpenChange` props for controlling visibility.
      */
-    createOrganizationDialog?: (props: {
+    createOrganizationDialog?: ComponentType<{
         open: boolean
         onOpenChange: (open: boolean) => void
-    }) => ReactNode
+    }>
 }
 
 /**
@@ -523,18 +524,23 @@ export function OrganizationSwitcher({
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            {createOrganizationDialog
-                ? createOrganizationDialog({
-                      open: isCreateOrgDialogOpen,
-                      onOpenChange: setIsCreateOrgDialogOpen
-                  })
-                : (
+            {(() => {
+                const CreateOrganizationDialogOverride =
+                    createOrganizationDialog
+
+                return CreateOrganizationDialogOverride ? (
+                    <CreateOrganizationDialogOverride
+                        open={isCreateOrgDialogOpen}
+                        onOpenChange={setIsCreateOrgDialogOpen}
+                    />
+                ) : (
                     <CreateOrganizationDialog
                         open={isCreateOrgDialogOpen}
                         onOpenChange={setIsCreateOrgDialogOpen}
                         localization={localization}
                     />
-                )}
+                )
+            })()}
         </>
     )
 }
