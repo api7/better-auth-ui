@@ -79,6 +79,16 @@ export interface OrganizationSwitcherProps
      */
     hidePersonal?: boolean
     hideCreate?: boolean
+    /**
+     * Custom create-organization dialog component.
+     * When provided, clicking "Create Organization" in the dropdown will open this
+     * dialog instead of the built-in CreateOrganizationDialog.
+     * Receives `open` and `onOpenChange` props for controlling visibility.
+     */
+    createOrganizationDialog?: (props: {
+        open: boolean
+        onOpenChange: (open: boolean) => void
+    }) => ReactNode
 }
 
 /**
@@ -105,6 +115,7 @@ export function OrganizationSwitcher({
     onSetActive,
     hidePersonal,
     hideCreate,
+    createOrganizationDialog,
     ...props
 }: OrganizationSwitcherProps) {
     const {
@@ -512,11 +523,18 @@ export function OrganizationSwitcher({
                 </DropdownMenuContent>
             </DropdownMenu>
 
-            <CreateOrganizationDialog
-                open={isCreateOrgDialogOpen}
-                onOpenChange={setIsCreateOrgDialogOpen}
-                localization={localization}
-            />
+            {createOrganizationDialog
+                ? createOrganizationDialog({
+                      open: isCreateOrgDialogOpen,
+                      onOpenChange: setIsCreateOrgDialogOpen
+                  })
+                : (
+                    <CreateOrganizationDialog
+                        open={isCreateOrgDialogOpen}
+                        onOpenChange={setIsCreateOrgDialogOpen}
+                        localization={localization}
+                    />
+                )}
         </>
     )
 }
