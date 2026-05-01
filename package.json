@@ -1,19 +1,23 @@
 {
-    "name": "@daveyplate/better-auth-ui",
+    "name": "@api7/better-auth-ui",
     "homepage": "https://better-auth-ui.com",
-    "version": "3.3.15",
+    "version": "3.3.15-api7.0",
     "description": "Plug & play shadcn/ui components for better-auth",
     "scripts": {
         "build": "tsup --clean --dts && cp src/style.css dist/style.css",
-        "prepare": "pnpm build",
         "dev": "tsc-watch",
-        "prepublishOnly": "rm -rf dist && turbo build",
+        "prepack": "pnpm build && pnpm verify:package",
+        "prepublishOnly": "pnpm build && pnpm verify:package",
+        "verify:package": "node scripts/verify-package.mjs",
+        "verify:consumer": "node scripts/verify-consumer.mjs",
+        "pack:dry-run": "npm pack --dry-run",
         "lint": "biome check",
         "lint:fix": "biome check --write"
     },
     "type": "module",
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "exports": {
         "./css": "./dist/style.css",
         ".": {
@@ -68,8 +72,9 @@
         }
     },
     "files": [
-        "src",
-        "dist"
+        "dist",
+        "README.md",
+        "LICENSE"
     ],
     "keywords": [
         "typescript",
@@ -161,5 +166,8 @@
         "vaul": "^1.1.2"
     },
     "packageManager": "pnpm@10.26.2",
+    "publishConfig": {
+        "access": "public"
+    },
     "overrides": {}
 }
