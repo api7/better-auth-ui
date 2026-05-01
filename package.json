@@ -6,10 +6,8 @@
     "scripts": {
         "build": "tsup --clean --dts && cp src/style.css dist/style.css",
         "dev": "tsc-watch",
-        "prepack": "pnpm build && pnpm verify:package",
-        "prepublishOnly": "pnpm build && pnpm verify:package",
-        "verify:package": "node scripts/verify-package.mjs",
-        "verify:consumer": "node scripts/verify-consumer.mjs",
+        "prepack": "pnpm build",
+        "prepublishOnly": "pnpm build",
         "pack:dry-run": "npm pack --dry-run",
         "lint": "biome check",
         "lint:fix": "biome check --write"

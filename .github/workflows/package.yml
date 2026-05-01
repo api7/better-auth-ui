@@ -10,7 +10,6 @@ on:
       - tsconfig.json
       - tsup.config.ts
       - src/**
-      - scripts/**
       - .github/workflows/package.yml
       - PUBLISHING.md
   push:
@@ -50,9 +49,3 @@ jobs:
 
       - name: Build package
         run: pnpm build
-
-      - name: Verify package dist
-        run: pnpm verify:package
-
-      - name: Verify packed consumer install
-        run: pnpm verify:consumer

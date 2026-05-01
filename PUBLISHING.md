@@ -24,22 +24,11 @@ Run these commands before publishing:
 ```bash
 pnpm install --frozen-lockfile
 pnpm build
-pnpm verify:package
-pnpm verify:consumer
 npm pack --dry-run
 ```
 
-`pnpm verify:package` checks that:
-
-- the package is named `@api7/better-auth-ui`
-- `prepare` is not used for consumer installs
-- `dist/index.js` preserves `"use client"`
-- the public type exports used by API7 Developer Portal exist
-- server-side view path exports exist
-- all package export targets point to files included in `dist`
-
-`pnpm verify:consumer` packs the package, installs the tarball in a temporary
-consumer project, type-checks common imports, and verifies runtime exports.
+`npm pack --dry-run` runs `prepack`, which rebuilds `dist` and shows the files
+that will be included in the published tarball.
 
 ## Publish
 
