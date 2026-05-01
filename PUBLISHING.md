@@ -30,6 +30,30 @@ npm pack --dry-run
 `npm pack --dry-run` runs `prepack`, which rebuilds `dist` and shows the files
 that will be included in the published tarball.
 
+## Automated Release
+
+This repository publishes the npm package from GitHub Actions when a version tag
+is pushed, following the same tag-triggered release boundary used by
+`api7/adc`.
+
+Before creating a tag, configure npm Trusted Publishing for:
+
+- package: `@api7/better-auth-ui`
+- owner: `api7`
+- repository: `better-auth-ui`
+- workflow: `.github/workflows/release.yaml`
+
+The tag must match `package.json` exactly:
+
+```bash
+git tag v3.3.15-api7.0
+git push origin v3.3.15-api7.0
+```
+
+The release workflow installs dependencies, verifies that the tag version
+matches `package.json`, checks that the package version is not already
+published, runs `npm pack --dry-run`, and publishes to npm.
+
 ## Publish
 
 Make sure you are logged in with permission to publish under the `@api7` scope:
