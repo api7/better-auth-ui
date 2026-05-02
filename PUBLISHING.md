@@ -32,19 +32,15 @@ that will be included in the published tarball.
 
 ## Automated Release
 
-This repository publishes the npm package from GitHub Actions with the same
-manual release boundary used by `api7/portal-sdk-typescript`: the `Release`
-workflow is started with `workflow_dispatch`, defaults to a dry run, and uses
-npm Trusted Publishing/OIDC. Do not add a token-based fallback path.
+This repository publishes the npm package from GitHub Actions with a single
+token-based release path. The `Release` workflow is started with
+`workflow_dispatch` and defaults to a dry run.
 
-Before running the workflow, configure npm Trusted Publishing for:
+Before running the workflow, ask an API7 npm/GitHub administrator to add an npm
+automation token with permission to publish under the `@api7` scope as the
+`NPM_TOKEN` repository or environment secret.
 
-- package: `@api7/better-auth-ui`
-- owner: `api7`
-- repository: `better-auth-ui`
-- workflow filename: `release.yaml`
-
-Then run the `Release` workflow manually from the `main` branch:
+Run the `Release` workflow manually from the `main` branch:
 
 - `dry_run`: `true` first
 - `dry_run`: `false` after the dry run succeeds
@@ -52,13 +48,7 @@ Then run the `Release` workflow manually from the `main` branch:
 The release workflow installs dependencies, verifies that the package version
 has not already been published, verifies that the workflow is running from the
 current `origin/main` commit, runs `npm pack --dry-run`, and publishes to npm
-with provenance.
-
-Because this repository intentionally uses a single Trusted Publishing path, the
-npm package must be ready for Trusted Publishing before the first non-dry-run
-release. If npm cannot configure Trusted Publishing for a never-published
-package, an API7 npm administrator must bootstrap the package outside this
-repository; do not add an `NPM_TOKEN` fallback here.
+with `NPM_TOKEN`. Do not add another publishing path.
 
 Do not restore a `prepare` script for this package. Consumers should install the
 prebuilt npm tarball rather than rebuilding the GitHub repository during their

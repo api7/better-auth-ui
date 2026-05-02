@@ -11,12 +11,10 @@ on:
 
 env:
   NODE_VERSION: "24.15.0"
-  NPM_CONFIG_PROVENANCE: true
   NPM_CONFIG_REGISTRY: https://registry.npmjs.org
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   npm:
@@ -73,7 +71,13 @@ jobs:
         run: npm pack --dry-run
 
       - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "NPM_TOKEN secret is required for publishing"
+            exit 1
+          fi
           args=(--access public)
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             args+=(--dry-run)
