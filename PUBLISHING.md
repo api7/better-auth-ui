@@ -36,23 +36,37 @@ This repository publishes the npm package from GitHub Actions when a version tag
 is pushed, following the same tag-triggered release boundary used by
 `api7/adc`.
 
-Before creating a tag, configure npm Trusted Publishing for:
+For the first release, publish the package once with an npm account or automation
+token that has permission to create packages under the `@api7` scope:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm pack:dry-run
+npm publish --access public
+```
+
+After `@api7/better-auth-ui` exists on npm, configure npm Trusted Publishing for
+later tag releases:
 
 - package: `@api7/better-auth-ui`
 - owner: `api7`
 - repository: `better-auth-ui`
-- workflow: `.github/workflows/release.yaml`
+- workflow filename: `release.yaml`
 
-The tag must match `package.json` exactly and use the API7 fork suffix:
+The tag must be created from a commit already merged to `main`, match
+`package.json` exactly, and use the API7 fork suffix:
 
 ```bash
+git checkout main
+git pull --ff-only
 git tag v3.3.15-api7.0
 git push origin v3.3.15-api7.0
 ```
 
 The release workflow installs dependencies, verifies that the tag version
 matches `package.json`, checks that the package version is not already
-published, runs `npm pack --dry-run`, and publishes to npm.
+published, verifies that the tagged commit is contained in `origin/main`, runs
+`npm pack --dry-run`, and publishes to npm.
 
 ## Publish
 
