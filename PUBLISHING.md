@@ -36,14 +36,14 @@ This repository publishes the npm package from GitHub Actions when a version tag
 is pushed, following the same tag-triggered release boundary used by
 `api7/adc`.
 
-For the first release, publish the package once with an npm account or automation
-token that has permission to create packages under the `@api7` scope:
+For the first release, publish the package once with an npm token that has
+permission to create packages under the `@api7` scope. If you do not have a
+local npm token, ask an API7 npm/GitHub administrator to add that token as the
+`NPM_TOKEN` repository or environment secret, then run the `Release` workflow
+manually from the `main` branch:
 
-```bash
-pnpm install --frozen-lockfile
-pnpm pack:dry-run
-npm publish --access public
-```
+- `auth_mode`: `npm-token`
+- `dry_run`: `true` first, then `false` after the dry run succeeds
 
 After `@api7/better-auth-ui` exists on npm, configure npm Trusted Publishing for
 later tag releases:
@@ -68,9 +68,10 @@ matches `package.json`, checks that the package version is not already
 published, verifies that the tagged commit is contained in `origin/main`, runs
 `npm pack --dry-run`, and publishes to npm.
 
-## Publish
+## Manual Publish Fallback
 
-Make sure you are logged in with permission to publish under the `@api7` scope:
+If CI publishing is unavailable, a maintainer with permission to publish under
+the `@api7` scope can still publish manually:
 
 ```bash
 npm whoami
