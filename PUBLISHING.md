@@ -32,51 +32,33 @@ that will be included in the published tarball.
 
 ## Automated Release
 
-This repository publishes the npm package from GitHub Actions when a version tag
-is pushed, following the same tag-triggered release boundary used by
-`api7/adc`.
+This repository publishes the npm package from GitHub Actions with the same
+manual release boundary used by `api7/portal-sdk-typescript`: the `Release`
+workflow is started with `workflow_dispatch`, defaults to a dry run, and uses
+npm Trusted Publishing/OIDC. Do not add a token-based fallback path.
 
-For the first release, publish the package once with an npm token that has
-permission to create packages under the `@api7` scope. If you do not have a
-local npm token, ask an API7 npm/GitHub administrator to add that token as the
-`NPM_TOKEN` repository or environment secret, then run the `Release` workflow
-manually from the `main` branch:
-
-- `auth_mode`: `npm-token`
-- `dry_run`: `true` first, then `false` after the dry run succeeds
-
-After `@api7/better-auth-ui` exists on npm, configure npm Trusted Publishing for
-later tag releases:
+Before running the workflow, configure npm Trusted Publishing for:
 
 - package: `@api7/better-auth-ui`
 - owner: `api7`
 - repository: `better-auth-ui`
 - workflow filename: `release.yaml`
 
-The tag must be created from a commit already merged to `main`, match
-`package.json` exactly, and use the API7 fork suffix:
+Then run the `Release` workflow manually from the `main` branch:
 
-```bash
-git checkout main
-git pull --ff-only
-git tag v3.3.15-api7.0
-git push origin v3.3.15-api7.0
-```
+- `dry_run`: `true` first
+- `dry_run`: `false` after the dry run succeeds
 
-The release workflow installs dependencies, verifies that the tag version
-matches `package.json`, checks that the package version is not already
-published, verifies that the tagged commit is contained in `origin/main`, runs
-`npm pack --dry-run`, and publishes to npm.
+The release workflow installs dependencies, verifies that the package version
+has not already been published, verifies that the workflow is running from the
+current `origin/main` commit, runs `npm pack --dry-run`, and publishes to npm
+with provenance.
 
-## Manual Publish Fallback
-
-If CI publishing is unavailable, a maintainer with permission to publish under
-the `@api7` scope can still publish manually:
-
-```bash
-npm whoami
-npm publish --access public
-```
+Because this repository intentionally uses a single Trusted Publishing path, the
+npm package must be ready for Trusted Publishing before the first non-dry-run
+release. If npm cannot configure Trusted Publishing for a never-published
+package, an API7 npm administrator must bootstrap the package outside this
+repository; do not add an `NPM_TOKEN` fallback here.
 
 Do not restore a `prepare` script for this package. Consumers should install the
 prebuilt npm tarball rather than rebuilding the GitHub repository during their

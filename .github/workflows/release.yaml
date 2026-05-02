@@ -1,9 +1,6 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "v*.*.*-api7.*"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -11,17 +8,11 @@ on:
         required: false
         default: true
         type: boolean
-      auth_mode:
-        description: "Use Trusted Publishing for existing packages, or npm-token for first publish"
-        required: true
-        default: trusted-publishing
-        type: choice
-        options:
-          - trusted-publishing
-          - npm-token
 
 env:
   NODE_VERSION: "24.15.0"
+  NPM_CONFIG_PROVENANCE: true
+  NPM_CONFIG_REGISTRY: https://registry.npmjs.org
 
 permissions:
   contents: read
@@ -37,23 +28,12 @@ jobs:
 
       - name: Setup release flow
         run: |
-          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
-            echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_ENV"
-          else
-            package_version="$(node -p "require('./package.json').version")"
-            echo "RELEASE_VERSION=$package_version" >> "$GITHUB_ENV"
-          fi
+          package_version="$(node -p "require('./package.json').version")"
+          echo "RELEASE_VERSION=$package_version" >> "$GITHUB_ENV"
 
       - name: Verify release source
         run: |
           git fetch --no-tags origin main:refs/remotes/origin/main
-          if [ "$GITHUB_EVENT_NAME" = "push" ]; then
-            if git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
-              exit 0
-            fi
-            echo "Release tag must point to a commit contained in origin/main"
-            exit 1
-          fi
           if [ "$GITHUB_REF" != "refs/heads/main" ]; then
             echo "Manual release must run from the main branch"
             exit 1
@@ -81,7 +61,7 @@ jobs:
           PACKAGE_NAME="$(node -p "require('./package.json').name")"
           PACKAGE_VERSION="$(node -p "require('./package.json').version")"
           if [ "$PACKAGE_VERSION" != "$RELEASE_VERSION" ]; then
-            echo "Tag version v$RELEASE_VERSION does not match package version $PACKAGE_VERSION"
+            echo "Release version $RELEASE_VERSION does not match package version $PACKAGE_VERSION"
             exit 1
           fi
           if npm view "$PACKAGE_NAME@$PACKAGE_VERSION" version >/dev/null 2>&1; then
@@ -92,24 +72,8 @@ jobs:
       - name: Pack dry run
         run: npm pack --dry-run
 
-      - name: Publish to npm with Trusted Publishing
-        if: github.event_name == 'push' || inputs.auth_mode == 'trusted-publishing'
+      - name: Publish to npm
         run: |
-          args=(--access public)
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] && [ "${{ inputs.dry_run }}" = "true" ]; then
-            args+=(--dry-run)
-          fi
-          npm publish "${args[@]}"
-
-      - name: Publish to npm with token
-        if: github.event_name == 'workflow_dispatch' && inputs.auth_mode == 'npm-token'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          if [ -z "$NODE_AUTH_TOKEN" ]; then
-            echo "NPM_TOKEN secret is required for npm-token publishing"
-            exit 1
-          fi
           args=(--access public)
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             args+=(--dry-run)
