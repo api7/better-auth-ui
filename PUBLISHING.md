@@ -43,7 +43,7 @@ Before creating a tag, configure npm Trusted Publishing for:
 - repository: `better-auth-ui`
 - workflow: `.github/workflows/release.yaml`
 
-The tag must match `package.json` exactly:
+The tag must match `package.json` exactly and use the API7 fork suffix:
 
 ```bash
 git tag v3.3.15-api7.0

@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*.*.*-api7.*"
 
 env:
   NODE_VERSION: "24.15.0"
