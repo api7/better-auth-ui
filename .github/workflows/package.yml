@@ -50,3 +50,6 @@ jobs:
 
       - name: Build package
         run: pnpm build
+
+      - name: Check package tarball
+        run: pnpm pack:dry-run
